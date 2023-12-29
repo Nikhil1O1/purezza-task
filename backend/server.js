@@ -4,6 +4,14 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
+
+cloudinary.config({
+  cloud_name: process.env.CNAME,
+  api_key: process.env.KEY,
+  api_secret: process.env.SECRET,
+});
+
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -20,6 +28,7 @@ const UserSchema = new mongoose.Schema({
   phone: String,
   email: String,
   dob: Date,
+  image: String,
 });
 
 const User = mongoose.model('User', UserSchema);

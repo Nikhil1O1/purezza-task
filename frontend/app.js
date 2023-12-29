@@ -7,12 +7,16 @@ async function addUser() {
   const userForm = document.getElementById('userForm');
   const formData = new FormData(userForm);
 
-  const user = {};
-  formData.forEach((value, key) => {
-    user[key] = value;
-  });
-
   try {
+
+    const imageFile = formData.get('image');
+    const imageUrl = await uploadImageToCloudinary(imageFile);
+
+    const user = {};
+    formData.forEach((value, key) => {
+      user[key] = value;
+    });
+
     const response = await fetch('http://localhost:3000/api/users', {
       method: 'POST',
       headers: {
@@ -28,6 +32,21 @@ async function addUser() {
   } catch (error) {
     console.error('Error adding user:', error);
   }
+}
+
+async function uploadImageToCloudinary(imageFile) {
+  const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dmubojkcz/image/upload';
+  const formData = new FormData();
+  formData.append('file', imageFile);
+  formData.append('upload_preset', 'preset');
+
+  const response = await fetch(cloudinaryUrl, {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await response.json();
+  return result.secure_url;
 }
 
 async function loadUsers() {
